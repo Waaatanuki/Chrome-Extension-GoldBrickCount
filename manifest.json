@@ -14,11 +14,13 @@
     "content_scripts": [
         {
             "matches": [
-                "*://game.granbluefantasy.jp/*",
+                "*://*.granbluefantasy.jp/*",
+                "*://gbf.game.mbga.jp/*",
                 "*://waaatanuki.github.io/gbf-app/*",
                 "*://waaatanuki.gitee.io/gbf-app/*"
             ],
-            "js": ["cs.js"]
+            "js": ["cs.js"],
+            "run_at": "document_end"
         }
     ],
 
@@ -26,9 +28,9 @@
         "default_popup": "popup.html"
     },
 
-    "permissions": ["webRequest", "storage"],
+    "permissions": ["webRequest", "storage", "tabs"],
     "host_permissions": [
-        "*://game.granbluefantasy.jp/*",
+        "*://*.granbluefantasy.jp/*",
         "*://gbf.game.mbga.jp/*",
         "*://waaatanuki.github.io/gbf-app/*",
         "*://waaatanuki.gitee.io/gbf-app/*"

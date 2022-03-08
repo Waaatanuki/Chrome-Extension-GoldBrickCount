@@ -1,9 +1,15 @@
-chrome.webRequest.onCompleted.addListener(
-    function (details) {
-        chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
+    if (
+        changeInfo.hasOwnProperty("status") &&
+        changeInfo.status == "complete" &&
+        tab.url.indexOf("granbluefantasy.jp/#result_multi") != -1 &&
+        tab.url.indexOf("empty") == -1
+    ) {
+        console.log(tab);
+        console.log(changeInfo);
+        chrome.tabs.query({ active: true, currentWindow: true, status: "complete" }, function (tabs) {
             console.log("count start");
-            tabs.length != 0 && chrome.tabs.sendMessage(tabs[0].id, { todo: "count" });
+            chrome.tabs.sendMessage(tabId, { todo: "count" });
         });
-    },
-    { urls: ["*://game.granbluefantasy.jp/resultmulti/data/*"] }
-);
+    }
+});
