@@ -1,8 +1,7 @@
 chrome.webRequest.onCompleted.addListener(
     function (details) {
-        console.log(details);
         chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-            console.log("go count");
+            console.log("count start");
             tabs.length != 0 && chrome.tabs.sendMessage(tabs[0].id, { todo: "count" });
         });
     },
