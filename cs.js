@@ -31,7 +31,6 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
         }, 300);
     }
     if (message.todo == "import") {
-        console.log(2123);
         const re = /waaatanuki.[a-zA-Z]+.io\/gbf-app/;
         if (re.test(document.URL)) {
             console.log("开始导入...");

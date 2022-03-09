@@ -18,7 +18,8 @@
                 "*://*.granbluefantasy.jp/*",
                 "*://gbf.game.mbga.jp/*",
                 "*://waaatanuki.github.io/gbf-app/*",
-                "*://waaatanuki.gitee.io/gbf-app/*"
+                "*://waaatanuki.gitee.io/gbf-app/*",
+                "*://localhost/*"
             ],
             "js": ["cs.js"],
             "run_at": "document_end"
@@ -34,6 +35,7 @@
         "*://*.granbluefantasy.jp/*",
         "*://gbf.game.mbga.jp/*",
         "*://waaatanuki.github.io/gbf-app/*",
-        "*://waaatanuki.gitee.io/gbf-app/*"
+        "*://waaatanuki.gitee.io/gbf-app/*",
+        "*://localhost/*"
     ]
 }
