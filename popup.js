@@ -11,4 +11,7 @@ button.addEventListener("click", function () {
 //     chrome.storage.sync.get(null, function (result) {
 //         console.log(result);
 //     });
+//     chrome.storage.sync.clear(() => {
+//         console.log("导入成功,并清空chrome storage。");
+//     });
 // });
