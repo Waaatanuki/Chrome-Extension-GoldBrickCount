@@ -1,9 +1,10 @@
 const TARGET_ITEM = ["10_138", "10_59", "10_79", "10_534", "10_546"];
 const RAID_NAME = ["cb", "tuyobaha", "tuyobaha", "akx", "gurande"];
 
-chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
+chrome.runtime.onMessage.addListener(function (message) {
     if (message.todo == "count") {
         const start = setInterval(() => {
+            console.log("start");
             document.URL.indexOf("empty") != -1 && clearInterval(start);
 
             if (document.querySelector(".prt-item-list")) {
