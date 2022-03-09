@@ -4,7 +4,6 @@ const RAID_NAME = ["cb", "tuyobaha", "tuyobaha", "akx", "gurande", "test"];
 chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
     if (message.todo == "count") {
         const start = setInterval(() => {
-            console.log(123);
             document.URL.indexOf("empty") != -1 && clearInterval(start);
 
             if (document.querySelector(".prt-item-list")) {
@@ -25,48 +24,58 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
                             ? document.querySelector(".prt-item-list div[data-box='11']").dataset.key
                             : false;
 
-                        chrome.storage.sync.set({ [id]: result }, function () {
-                            console.log(result);
-                        });
+                        chrome.storage.sync.set({ [id]: result });
                     }
                 }
             }
         }, 300);
     }
     if (message.todo == "import") {
-        const DBOpenRequest = window.indexedDB.open("gbfApp");
-        var db;
-        const jsonstr = {
-            BlueChests: [
-                { 0: { name: "baha", age: 0 } },
-                { 1: { name: "akx", age: 1 } },
-                { 2: { name: "haha", age: 2 } },
-            ],
-        };
-        DBOpenRequest.onupgradeneeded = function (event) {
-            db = event.target.result;
-            if (!db.objectStoreNames.contains("BlueChests")) {
-                console.log(123);
-                db.createObjectStore("BlueChests");
-            }
-        };
-        DBOpenRequest.onsuccess = async function (event) {
-            db = DBOpenRequest.result;
+        console.log(2123);
+        const re = /waaatanuki.[a-zA-Z]+.io\/gbf-app/;
+        if (re.test(document.URL)) {
+            console.log("开始导入...");
+            const DBOpenRequest = window.indexedDB.open("gbfApp");
+            let db;
 
-            importFromJson(db, JSON.stringify(jsonstr), function (err) {
-                if (!err) {
-                    console.log("Imported data successfully");
+            DBOpenRequest.onupgradeneeded = function (event) {
+                db = event.target.result;
+                if (!db.objectStoreNames.contains("GoldBrick")) {
+                    db.createObjectStore("GoldBrick");
                 }
-            });
-        };
+            };
+            DBOpenRequest.onsuccess = async function (event) {
+                db = DBOpenRequest.result;
+
+                chrome.storage.sync.get(null, function (items) {
+                    const jsonstr = {
+                        GoldBrick: [],
+                    };
+
+                    for (const k in items) {
+                        if (Object.hasOwnProperty.call(items, k)) {
+                            jsonstr.GoldBrick.push({ [k]: items[k] });
+                        }
+                    }
+
+                    importFromJson(db, JSON.stringify(jsonstr), function (err) {
+                        if (!err) {
+                            chrome.storage.sync.clear(() => {
+                                console.log("导入成功,并清空chrome storage。");
+                            });
+                        }
+                    });
+                });
+            };
+        } else {
+            console.log("导入网页不正确");
+        }
     }
     return true;
 });
 
 const importFromJson = function (idbDatabase, jsonString, cb) {
-    console.log(idbDatabase);
     const objectStoreNamesSet = new Set(idbDatabase.objectStoreNames);
-    console.log(objectStoreNamesSet);
     const size = objectStoreNamesSet.size;
     if (size === 0) {
         cb(null);
@@ -77,7 +86,6 @@ const importFromJson = function (idbDatabase, jsonString, cb) {
 
         const importObject = JSON.parse(jsonString);
 
-        // Delete keys present in JSON that are not present in database
         Object.keys(importObject).forEach(storeName => {
             if (!objectStoreNames.includes(storeName)) {
                 delete importObject[storeName];
@@ -85,7 +93,6 @@ const importFromJson = function (idbDatabase, jsonString, cb) {
         });
 
         if (Object.keys(importObject).length === 0) {
-            // no object stores exist to import for
             cb(null);
         }
 
@@ -96,17 +103,14 @@ const importFromJson = function (idbDatabase, jsonString, cb) {
             console.log(aux);
             if (importObject[storeName] && aux.length > 0) {
                 aux.forEach(toAdd => {
-                    console.log(Object.keys(toAdd)[0]);
                     const request = transaction
                         .objectStore(storeName)
-                        .add(toAdd[Object.keys(toAdd)[0]], Object.keys(toAdd)[0]);
+                        .put(toAdd[Object.keys(toAdd)[0]], Object.keys(toAdd)[0]);
                     request.onsuccess = () => {
                         count++;
                         if (count === importObject[storeName].length) {
-                            // added all objects for this store
                             delete importObject[storeName];
                             if (Object.keys(importObject).length === 0) {
-                                // added all object stores
                                 cb(null);
                             }
                         }
@@ -119,7 +123,6 @@ const importFromJson = function (idbDatabase, jsonString, cb) {
                 if (importObject[storeName]) {
                     delete importObject[storeName];
                     if (Object.keys(importObject).length === 0) {
-                        // added all object stores
                         cb(null);
                     }
                 }

@@ -6,13 +6,25 @@
         <meta http-equiv="X-UA-Compatible" content="ie=edge" />
         <title>Document</title>
         <style>
+            body {
+                padding: 0px;
+                margin: 0px;
+            }
+            .root {
+                min-height: 25px;
+                min-width: 60px;
+            }
             button {
-                width: 50px;
+                line-height: 25px;
+                font-size: 15px;
+                width: 100%;
             }
         </style>
     </head>
     <body>
-        <button id="import">导入</button>
+        <div class="root">
+            <button id="import">导入</button>
+        </div>
 
         <script src="popup.js"></script>
     </body>
