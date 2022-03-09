@@ -1,5 +1,5 @@
-const TARGET_ITEM = ["10_138", "10_59", "10_79", "10_534", "10_546", "10_10417"];
-const RAID_NAME = ["cb", "tuyobaha", "tuyobaha", "akx", "gurande", "test"];
+const TARGET_ITEM = ["10_138", "10_59", "10_79", "10_534", "10_546"];
+const RAID_NAME = ["cb", "tuyobaha", "tuyobaha", "akx", "gurande"];
 
 chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
     if (message.todo == "count") {
