@@ -22,7 +22,7 @@
    
 3. 数字底色的绿色代表场次小于等于100，黄色为小于等于200，超出200为红色。因为插件容量的限制，为避免意料之外的数据丢失，建议变为红色后就导入一次数据。
    
-4. 将数据导入gbfApp需要保证页面处于[waaatanuki.github.io/gbf-app]()或者[waaatanuki.gitee.io/gbf-app]()，点击图标里的导入按钮即可完成导入。![image-20220310090726469](https://img.nga.178.com/attachments/mon_202203/10/-zv3miQbvvr-coenKdT3cSob-24.png)
+4. 将数据导入gbfApp需要保证页面处于[gbfApp-github](https://waaatanuki.github.io/gbf-app/#/)或者[gbfApp-gitee](https://waaatanuki.gitee.io/gbf-app/#/)，点击图标里的导入按钮即可完成导入。![image-20220310090726469](https://img.nga.178.com/attachments/mon_202203/10/-zv3miQbvvr-coenKdT3cSob-24.png)
    
 5. 导入会清空chrome插件中的数据，重新开始记数，整体数据长期保存在gbfApp的indexedDB数据库。之后如果插件需要更新，都建议先把数据导入gbfApp再更新，以免数据丢失。
 
