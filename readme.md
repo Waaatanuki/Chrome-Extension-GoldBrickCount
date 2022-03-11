@@ -4,6 +4,10 @@
 
 配合gbfApp中金本统计使用的chrome插件，统计超巴、大巴、akx、大公掉落，并存入indexedDB，使数据可以跨域使用。
 
+## 更新记录
+- v1.1 增加导出按钮，短期使用时不用再经过gbfApp，可直接导出json数据文件
+
+
 ## 安装方法
 
 1. 下载并解压chrome插件
@@ -25,4 +29,6 @@
 4. 将数据导入gbfApp需要保证页面处于[gbfApp-github](https://waaatanuki.github.io/gbf-app/#/)或者[gbfApp-gitee](https://waaatanuki.gitee.io/gbf-app/#/)，点击图标里的导入按钮即可完成导入，刷新页面可以看到分析数据。![image-20220310090726469](https://img.nga.178.com/attachments/mon_202203/10/-zv3miQbvvr-coenKdT3cSob-24.png)
    
 5. 导入会清空chrome插件中的数据，重新开始记数，整体数据长期保存在gbfApp的indexedDB数据库。之后如果插件需要更新，都建议先把数据导入gbfApp再更新，以免数据丢失。
+   
+6. 导出一般在短期使用的电脑(比如公司电脑)上猎金时，为了将数据与家中电脑数据合并时使用，免去了需要先将数据导入到gbfApp这一步，可直接将数据导出成json文件，在家中gbfApp网站导入该文件即可完成数据合并。导出同样会清空chrome插件中的数据。
 
