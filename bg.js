@@ -2,7 +2,9 @@ const re = /granbluefantasy.jp\/#result_multi\/[0-9]+/;
 
 const setBadge = function () {
     chrome.storage.sync.get(null, function (items) {
-        const total = Object.keys(items).length;
+        const total = Object.hasOwnProperty.call(items, "materialInfo")
+            ? Object.keys(items).length - 1
+            : Object.keys(items).length;
         const color = total <= 100 ? "#25b506" : total <= 200 ? "#becc00" : "#be0000";
         chrome.action.setBadgeText({ text: total.toString() }, function () {
             chrome.action.setBadgeBackgroundColor({ color });

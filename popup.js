@@ -1,5 +1,7 @@
 const importButton = document.getElementById("import");
 const exportButton = document.getElementById("export");
+const importItemButton = document.getElementById("importItem");
+const exportItemButton = document.getElementById("exportItem");
 
 importButton.addEventListener("click", function () {
     chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
@@ -20,6 +22,18 @@ exportButton.addEventListener("click", function () {
         chrome.storage.sync.clear(() => {
             console.log("导出成功,并清空chrome storage。");
         });
+    });
+});
+importItemButton.addEventListener("click", function () {
+    chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+        // console.log("import start");
+        tabs.length != 0 && chrome.tabs.sendMessage(tabs[0].id, { todo: "importItem" });
+    });
+});
+exportItemButton.addEventListener("click", function () {
+    chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+        // console.log("import start");
+        tabs.length != 0 && chrome.tabs.sendMessage(tabs[0].id, { todo: "exportItem" });
     });
 });
 

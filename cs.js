@@ -1,5 +1,6 @@
 const TARGET_ITEM = ["10_138", "10_59", "10_79", "10_534", "10_546"];
 const RAID_NAME = ["cb", "tuyobaha", "tuyobaha", "akx", "gurande"];
+const re = /waaatanuki.[a-zA-Z]+.io\/gbf-app/;
 
 chrome.runtime.onMessage.addListener(function (message) {
     if (message.todo == "count") {
@@ -32,7 +33,6 @@ chrome.runtime.onMessage.addListener(function (message) {
         }, 300);
     }
     if (message.todo == "import") {
-        const re = /waaatanuki.[a-zA-Z]+.io\/gbf-app/;
         if (re.test(document.URL)) {
             console.log("开始导入...");
             const DBOpenRequest = window.indexedDB.open("gbfApp");
@@ -68,7 +68,40 @@ chrome.runtime.onMessage.addListener(function (message) {
                 });
             };
         } else {
-            console.log("导入网页不正确");
+            alert("导入网页不正确");
+        }
+    }
+    if (message.todo == "importItem") {
+        const itemList = [
+            25000, 25001, 25002, 25003, 25004, 25005, 25006, 25007, 25008, 25009, 25010, 25011, 25012, 25013, 25014,
+            25015, 25016, 25020, 25021, 25033, 25034, 25035, 25036, 25023, 25024, 25025, 25026, 25047, 25048, 25049,
+            25050, 25051, 25052, 25053, 25054, 25055, 25056, 25070, 25071, 25072, 25073, 25074,
+        ];
+        const materialInfo = {};
+        for (let i = 0; i < itemList.length; i++) {
+            const target = `img[src='http://game-a.granbluefantasy.jp/assets/img/sp/assets/item/article/s/${itemList[i]}.jpg']`;
+            if (document.querySelector(target)) {
+                const count = parseInt(document.querySelector(target).nextElementSibling.innerText);
+                materialInfo[itemList[i]] = count;
+            }
+        }
+        chrome.storage.sync.set({ materialInfo: JSON.stringify(materialInfo) }, () => {
+            alert("读取成功");
+        });
+    }
+    if (message.todo == "exportItem") {
+        if (re.test(document.URL)) {
+            chrome.storage.sync.get("materialInfo", function (items) {
+                if (Object.keys(items).length != 0) {
+                    localStorage.setItem("materialInfo", items["materialInfo"]);
+                    alert("导入成功");
+                    location.reload();
+                } else {
+                    alert("没有可导入的数据");
+                }
+            });
+        } else {
+            alert("导入网页不正确");
         }
     }
     return true;
