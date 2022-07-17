@@ -79,7 +79,7 @@ chrome.runtime.onMessage.addListener(function (message) {
         ];
         const materialInfo = {};
         for (let i = 0; i < itemList.length; i++) {
-            const target = `img[src='http://game-a.granbluefantasy.jp/assets/img/sp/assets/item/article/s/${itemList[i]}.jpg']`;
+            const target = `img[src='https://prd-game-a-granbluefantasy.akamaized.net/assets/img/sp/assets/item/article/s/${itemList[i]}.jpg']`;
             if (document.querySelector(target)) {
                 const count = parseInt(document.querySelector(target).nextElementSibling.innerText);
                 materialInfo[itemList[i]] = count;
@@ -94,8 +94,10 @@ chrome.runtime.onMessage.addListener(function (message) {
             chrome.storage.sync.get("materialInfo", function (items) {
                 if (Object.keys(items).length != 0) {
                     localStorage.setItem("materialInfo", items["materialInfo"]);
-                    alert("导入成功");
-                    location.reload();
+                    chrome.storage.sync.remove("materialInfo", () => {
+                        alert("导入成功");
+                        location.reload();
+                    });
                 } else {
                     alert("没有可导入的数据");
                 }
