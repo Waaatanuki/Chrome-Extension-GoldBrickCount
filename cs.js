@@ -72,6 +72,10 @@ chrome.runtime.onMessage.addListener(function (message) {
         }
     }
     if (message.todo == "importItem") {
+        if (!/#item$/.test(document.URL)) {
+            alert("请在素材界面读取");
+            return;
+        }
         const itemList = [
             25000, 25001, 25002, 25003, 25004, 25005, 25006, 25007, 25008, 25009, 25010, 25011, 25012, 25013, 25014,
             25015, 25016, 25020, 25021, 25033, 25034, 25035, 25036, 25023, 25024, 25025, 25026, 25047, 25048, 25049,
@@ -79,14 +83,20 @@ chrome.runtime.onMessage.addListener(function (message) {
         ];
         const materialInfo = {};
         for (let i = 0; i < itemList.length; i++) {
-            const target = `img[src='https://prd-game-a-granbluefantasy.akamaized.net/assets/img/sp/assets/item/article/s/${itemList[i]}.jpg']`;
+            const target = `img[src*='/sp/assets/item/article/s/${itemList[i]}.jpg']`;
             if (document.querySelector(target)) {
                 const count = parseInt(document.querySelector(target).nextElementSibling.innerText);
                 materialInfo[itemList[i]] = count;
             }
         }
+        if (Object.keys(materialInfo).length == 0) {
+            alert("没有读取到素材信息");
+            return;
+        }
+
         chrome.storage.sync.set({ materialInfo: JSON.stringify(materialInfo) }, () => {
-            alert("读取成功");
+            console.log(materialInfo);
+            alert(`已读取${Object.keys(materialInfo).length}种素材信息`);
         });
     }
     if (message.todo == "exportItem") {
