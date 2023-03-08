@@ -1,41 +1,46 @@
 {
-    "manifest_version": 3,
-    "name": "GoldBrickCount",
-    "author": "waaatanuki",
-    "version": "1.3.1",
-    "description": "gbf金本统计",
-    "icons": {
-        "16": "icon.png",
-        "48": "icon.png",
-        "128": "icon.png"
-    },
-    "background": {
-        "service_worker": "bg.js"
-    },
-    "content_scripts": [
-        {
-            "matches": [
-                "*://*.granbluefantasy.jp/*",
-                "*://gbf.game.mbga.jp/*",
-                "*://waaatanuki.github.io/gbf-app/*",
-                "*://waaatanuki.gitee.io/gbf-app/*",
-                "*://localhost/*"
-            ],
-            "js": ["cs.js"],
-            "run_at": "document_end"
-        }
-    ],
-
-    "action": {
-        "default_popup": "popup.html"
-    },
-
-    "permissions": ["storage", "tabs"],
-    "host_permissions": [
+  "manifest_version": 3,
+  "name": "GoldBrickCount",
+  "author": "waaatanuki",
+  "version": "2.0.0",
+  "description": "gbf金本统计",
+  "icons": {
+    "16": "./assets/icon.png",
+    "48": "./assets/icon.png",
+    "128": "./assets/icon.png"
+  },
+  "permissions": ["storage", "unlimitedStorage", "tabs"],
+  "host_permissions": [
+    "*://*.granbluefantasy.jp/*",
+    "*://gbf.game.mbga.jp/*",
+    "*://waaatanuki.github.io/gbf-app/*",
+    "*://waaatanuki.gitee.io/gbf-app/*",
+    "*://localhost/*"
+  ],
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "action": {
+    "default_title": "GoldBrickCount",
+    "default_popup": "src/views/popup/main.html",
+    "default_icon": {
+      "16": "./assets/icon.png",
+      "48": "./assets/icon.png",
+      "128": "./assets/icon.png"
+    }
+  },
+  "content_scripts": [
+    {
+      "matches": [
         "*://*.granbluefantasy.jp/*",
         "*://gbf.game.mbga.jp/*",
         "*://waaatanuki.github.io/gbf-app/*",
         "*://waaatanuki.gitee.io/gbf-app/*",
         "*://localhost/*"
-    ]
+      ],
+      "js": ["content_script.js"],
+      "run_at": "document_end"
+    }
+  ]
 }

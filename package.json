@@ -1,0 +1,37 @@
+{
+  "name": "gbf-goldbrick-count",
+  "version": "2.0.0",
+  "keyword": "Chrome extension, Vite, Vue, Vue3",
+  "watch": {
+    "build": {
+      "patterns": [
+        "src"
+      ],
+      "extensions": "ts,vue,js,html,scss",
+      "runOnChangeOnly": false
+    }
+  },
+  "scripts": {
+    "build": "vite build && npm run copy",
+    "watch": "npm-watch",
+    "copy": "node ./scripts/copyAssets.ts",
+    "prettier": "prettier --write ."
+  },
+  "dependencies": {
+    "@vueuse/core": "^9.13.0",
+    "element-plus": "^2.2.36",
+    "vue": "^3.2.47"
+  },
+  "devDependencies": {
+    "@iconify-json/carbon": "^1.1.16",
+    "@types/chrome": "^0.0.220",
+    "@types/node": "^18.14.6",
+    "@unocss/reset": "^0.50.4",
+    "@vitejs/plugin-vue": "^4.0.0",
+    "fast-glob": "^3.2.12",
+    "npm-watch": "^0.11.0",
+    "prettier": "^2.8.4",
+    "unocss": "^0.50.4",
+    "vite": "^4.1.4"
+  }
+}
