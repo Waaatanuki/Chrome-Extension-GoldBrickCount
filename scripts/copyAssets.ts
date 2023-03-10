@@ -2,7 +2,7 @@ const path = require('path')
 const fsPromises = require('node:fs/promises')
 const copyList = [{ src: 'src/assets/icon', dest: 'dist/assets' }]
 
-async function copyFile(sourcePath, targetPath) {
+async function copyFile(sourcePath: string, targetPath: string) {
   await fsPromises.mkdir(targetPath, { recursive: true })
 
   const sourceFile = await fsPromises.readdir(sourcePath, {

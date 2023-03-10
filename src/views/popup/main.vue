@@ -86,12 +86,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
 import { defaultQuestData } from '@/settings'
-import { useDark, useToggle } from '@vueuse/core'
 
-const isDark = useDark()
-const toggleDark = useToggle(isDark)
 const questTableData = ref<any>([])
 
 onMounted(() => {
@@ -102,9 +98,6 @@ onMounted(() => {
   })
 })
 
-function getImgSrc(prop: string) {
-  return new URL(`/src/assets/image/${prop}.png`, import.meta.url).href
-}
 async function resetData() {
   questTableData.value = defaultQuestData
   await chrome.storage.local.set({ QuestTableData: defaultQuestData })
