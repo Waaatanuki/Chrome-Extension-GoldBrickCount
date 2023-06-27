@@ -40,7 +40,8 @@ const defaultQuestData = [
     lastBlueChestCount: 0,
   },
 ]
-chrome.runtime.onMessage.addListener(function (message) {
+
+chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
   console.log(message)
   if (message.todo == 'getBattleResult') {
     const start = setInterval(async () => {
@@ -72,6 +73,8 @@ chrome.runtime.onMessage.addListener(function (message) {
               goldBrickEl instanceof HTMLElement
                 ? goldBrickEl.dataset.box
                 : false
+
+            result.goldBrick && sendResponse(true)
 
             const blueChestsEl = document.querySelector(
               ".prt-item-list div[data-box='11']"

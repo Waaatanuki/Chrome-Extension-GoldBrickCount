@@ -9,7 +9,7 @@
     "48": "./assets/icon.png",
     "128": "./assets/icon.png"
   },
-  "permissions": ["storage", "unlimitedStorage", "tabs"],
+  "permissions": ["storage", "unlimitedStorage", "tabs", "notifications"],
   "host_permissions": [
     "*://*.granbluefantasy.jp/*",
     "*://gbf.game.mbga.jp/*",
