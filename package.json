@@ -14,7 +14,7 @@
   "scripts": {
     "build": "vite build && npm run copy",
     "watch": "npm-watch",
-    "copy": "node ./scripts/copyAssets.ts",
+    "copy": "ts-node ./scripts/copyAssets.ts",
     "prettier": "prettier --write ."
   },
   "devDependencies": {
