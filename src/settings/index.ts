@@ -14,6 +14,11 @@ const QUEST_LIST = [
     id: 305161,
     raidName: 'gurande',
   },
+  {
+    alias: '机神',
+    id: 305391,
+    raidName: 'Diaspora',
+  },
 ]
 
 export const defaultQuestData: QuestTableData[] = []
@@ -30,6 +35,7 @@ QUEST_LIST.forEach((quest) => {
     ring2: 0,
     ring3: 0,
     lastBlueChestCount: 0,
+    sandglass: 0,
   })
 })
 
@@ -44,4 +50,5 @@ interface QuestTableData {
   ring2: number
   ring3: number
   lastBlueChestCount: number
+  sandglass: number
 }

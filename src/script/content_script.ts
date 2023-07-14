@@ -2,6 +2,8 @@
 /* eslint-disable no-console */
 const TARGET_ITEM = ['10_138', '10_59', '10_79', '10_534', '10_546']
 const RAID_NAME = ['cb', 'tuyobaha', 'tuyobaha', 'akx', 'gurande']
+const Revans_RAID_ITEM = ['10_585']
+const Revans_RAID_NAME = ['Diaspora']
 const re = /waaatanuki.[a-zA-Z]+.io\/gbf-app/
 const urlREG = /granbluefantasy.jp\/#result_multi\/[0-9]+/
 const defaultQuestData = [
@@ -41,6 +43,19 @@ const defaultQuestData = [
     ring3: 0,
     lastBlueChestCount: 0,
   },
+  {
+    alias: '机神',
+    id: 305391,
+    raidName: 'Diaspora',
+    count: 0,
+    blueChest: 0,
+    goldBrick: 0,
+    ring1: 0,
+    ring2: 0,
+    ring3: 0,
+    lastBlueChestCount: 0,
+    sandglass: 0,
+  },
 ]
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
@@ -65,11 +80,28 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
           ) {
             result.timestamp = Date.now()
             result.raidName = RAID_NAME[i]
-
+            result.isSave = true
             const goldBrickEl = document.querySelector('.prt-item-list div[data-key=\'17_20004\']')
             result.goldBrick = goldBrickEl instanceof HTMLElement ? goldBrickEl.dataset.box : false
 
-            result.goldBrick && sendResponse(true)
+            result.goldBrick && sendResponse('goldbrick')
+
+            const blueChestsEl = document.querySelector('.prt-item-list div[data-box=\'11\']')
+            result.blueChests = blueChestsEl instanceof HTMLElement ? blueChestsEl.dataset.key : false
+
+            break
+          }
+        }
+
+        for (let i = 0; i < Revans_RAID_ITEM.length; i++) {
+          if (document.querySelector(`.prt-item-list div[data-key='${Revans_RAID_ITEM[i]}']`)) {
+            result.timestamp = Date.now()
+            result.raidName = Revans_RAID_NAME[i]
+
+            const sandglassEl = document.querySelector('.prt-item-list div[data-key=\'10_585\']')
+            result.sandglass = sandglassEl instanceof HTMLElement ? sandglassEl.dataset.box : false
+
+            result.sandglass && sendResponse('sandglass')
 
             const blueChestsEl = document.querySelector('.prt-item-list div[data-box=\'11\']')
             result.blueChests = blueChestsEl instanceof HTMLElement ? blueChestsEl.dataset.key : false
@@ -81,29 +113,35 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         if (Object.keys(result).length === 0)
           return
 
-        await chrome.storage.local.set({ [id]: result })
+        result.isSave && await chrome.storage.local.set({ [id]: result })
 
         const storage = await chrome.storage.local.get('QuestTableData')
         const tableData: any[] = storage.QuestTableData ? Object.values(storage.QuestTableData) : defaultQuestData
 
         try {
-          const targetQuestInfo = tableData.find((quest: any) => quest.raidName === result.raidName)
-          if (targetQuestInfo) {
-            targetQuestInfo.count++
+          console.log(tableData)
+          console.log(result)
 
-            result.blueChests && targetQuestInfo.blueChest++
-            result.goldBrick === '11' && targetQuestInfo.goldBrick++
-            result.blueChests === '73_1' && targetQuestInfo.ring1++
-            result.blueChests === '73_2' && targetQuestInfo.ring2++
-            result.blueChests === '73_3' && targetQuestInfo.ring3++
+          if (!tableData.some(quest => quest.raidName === result.raidName))
+            tableData.push(defaultQuestData.find(quest => quest.raidName === result.raidName))
 
-            targetQuestInfo.lastBlueChestCount
+          const targetQuestInfo = tableData.find(quest => quest.raidName === result.raidName)
+
+          targetQuestInfo.count++
+          result.blueChests && targetQuestInfo.blueChest++
+          result.goldBrick === '11' && targetQuestInfo.goldBrick++
+          result.blueChests === '73_1' && targetQuestInfo.ring1++
+          result.blueChests === '73_2' && targetQuestInfo.ring2++
+          result.blueChests === '73_3' && targetQuestInfo.ring3++
+          result.blueChests === '10_215' && targetQuestInfo.sandglass++
+
+          targetQuestInfo.lastBlueChestCount
               = result.blueChests === '17_20004'
-                ? 0
-                : result.blueChests
-                  ? targetQuestInfo.lastBlueChestCount + 1
-                  : targetQuestInfo.lastBlueChestCount
-          }
+              ? 0
+              : result.blueChests
+                ? targetQuestInfo.lastBlueChestCount || 0 + 1
+                : targetQuestInfo.lastBlueChestCount || 0
+
           await chrome.storage.local.set({ QuestTableData: tableData })
         }
         catch (error) {

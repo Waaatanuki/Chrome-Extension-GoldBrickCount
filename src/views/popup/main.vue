@@ -4,12 +4,14 @@
 import { defaultQuestData } from '@/settings'
 
 const questTableData = ref<any>([])
-
+const diasporaData = ref<any>()
 onMounted(() => {
   chrome.storage.local.get('QuestTableData').then((result) => {
     questTableData.value = result.QuestTableData
       ? Object.values(result.QuestTableData)
       : defaultQuestData
+    diasporaData.value = questTableData.value[3] || defaultQuestData[3]
+    questTableData.value = questTableData.value.slice(0, 3)
   })
 })
 
@@ -138,6 +140,29 @@ function exportJSONFile(itemList: any) {
           导出
         </el-button>
       </div>
+    </div>
+    <div p-2>
+      <el-descriptions border title="机神">
+        <el-descriptions-item label="总次数" align="center">
+          {{ diasporaData?.count }}
+        </el-descriptions-item>
+        <el-descriptions-item label="蓝箱" align="center">
+          <el-tooltip effect="dark" placement="top">
+            <template #content>
+              蓝箱率：{{ ((diasporaData.blueChest / diasporaData.count || 0) * 100).toFixed(1) }}%
+            </template>
+            {{ diasporaData?.blueChest }}
+          </el-tooltip>
+        </el-descriptions-item>
+        <el-descriptions-item label="沙漏" align="center">
+          <el-tooltip effect="dark" placement="top">
+            <template #content>
+              蓝箱沙漏率：{{ ((diasporaData.sandglass / diasporaData.blueChest || 0) * 100).toFixed(1) }}%
+            </template>
+            {{ diasporaData?.sandglass }}
+          </el-tooltip>
+        </el-descriptions-item>
+      </el-descriptions>
     </div>
   </div>
 </template>
