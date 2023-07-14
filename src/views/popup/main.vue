@@ -1,97 +1,12 @@
-<template>
-  <div w-500px>
-    <el-table :data="questTableData">
-      <el-table-column prop="name" align="center">
-        <template #header>
-          <div
-            m-auto
-            dark:i-carbon-moon
-            i-carbon-sun
-            @click="toggleDark()"
-            class="text-[0.9em] inline-block cursor-pointer select-none opacity-75 transition duration-200 ease-in-out hover:opacity-100 hover:text-teal-600 !outline-none"
-          />
-        </template>
-        <template #default="{ row }">
-          <img w-full m-auto :src="getImgSrc(row.id)" />
-        </template>
-      </el-table-column>
-      <el-table-column prop="blueChest" align="center">
-        <template #header="{ column }">
-          <img w-30px m-auto :src="getImgSrc(column.property)" />
-        </template>
-        <template #default="{ row }">
-          <el-tooltip effect="dark" placement="top">
-            <template #content>
-              总次数：{{ row.count }}<br />
-              蓝箱率：{{
-                ((row.blueChest / row.count || 0) * 100).toFixed(1)
-              }}%</template
-            >
-            {{ row.blueChest }}
-          </el-tooltip>
-        </template>
-      </el-table-column>
-      <el-table-column prop="goldBrick" align="center">
-        <template #header="{ column }">
-          <img w-30px m-auto :src="getImgSrc(column.property)" />
-        </template>
-        <template #default="{ row }">
-          <el-tooltip effect="dark" placement="top">
-            <template #content>
-              蓝箱金率：
-              {{ ((row.goldBrick / row.blueChest || 0) * 100).toFixed(1) }}%
-              <br />
-              已经{{ row.lastBlueChestCount }}个蓝箱没出金
-            </template>
-            {{ row.goldBrick }}
-          </el-tooltip>
-        </template>
-      </el-table-column>
-      <el-table-column prop="ring3" align="center">
-        <template #header="{ column }">
-          <img w-30px m-auto :src="getImgSrc(column.property)" />
-        </template>
-      </el-table-column>
-      <el-table-column prop="ring2" align="center">
-        <template #header="{ column }">
-          <img w-30px m-auto :src="getImgSrc(column.property)" />
-        </template>
-      </el-table-column>
-      <el-table-column prop="ring1" align="center">
-        <template #header="{ column }">
-          <img w-30px m-auto :src="getImgSrc(column.property)" />
-        </template>
-      </el-table-column>
-    </el-table>
-
-    <div flex justify-between>
-      <div>
-        <el-button m-2 @click="resetData" size="small" type="danger">
-          <div mr-1 i-carbon:reset></div>
-          重置</el-button
-        >
-      </div>
-      <div>
-        <el-button m-2 @click="importData" size="small" type="primary">
-          <div mr-1 i-carbon:document-import></div>
-          导入</el-button
-        >
-        <el-button m-2 @click="exportData" size="small" type="primary">
-          <div mr-1 i-carbon:document-export></div>
-          导出</el-button
-        >
-      </div>
-    </div>
-  </div>
-</template>
-
+<!-- eslint-disable no-console -->
+<!-- eslint-disable no-alert -->
 <script setup lang="ts">
 import { defaultQuestData } from '@/settings'
 
 const questTableData = ref<any>([])
 
 onMounted(() => {
-  chrome.storage.local.get('QuestTableData').then(function (result) {
+  chrome.storage.local.get('QuestTableData').then((result) => {
     questTableData.value = result.QuestTableData
       ? Object.values(result.QuestTableData)
       : defaultQuestData
@@ -105,19 +20,18 @@ async function resetData() {
 function importData() {
   const re = /waaatanuki.[a-zA-Z]+.io\/gbf-app/
 
-  chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-    if (tabs.length > 0 && tabs[0].id && tabs[0].url && re.test(tabs[0].url)) {
+  chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+    if (tabs.length > 0 && tabs[0].id && tabs[0].url && re.test(tabs[0].url))
       chrome.tabs.sendMessage(tabs[0].id, { todo: 'importData' })
-    } else {
+    else
       alert('只能在gbfApp网站导入')
-    }
   })
 }
 function exportData() {
-  chrome.storage.local.get(null, function (result) {
+  chrome.storage.local.get(null, (result) => {
     delete result.QuestTableData
     const data: any[] = []
-    Object.keys(result).forEach(k => {
+    Object.keys(result).forEach((k) => {
       data.push({ [k]: result[k] })
     })
     exportJSONFile(data)
@@ -128,9 +42,10 @@ function exportData() {
   })
 }
 function exportJSONFile(itemList: any) {
-  if (itemList.length == 0) {
+  if (itemList.length === 0) {
     alert('没有数据可以导出')
-  } else {
+  }
+  else {
     const data = JSON.stringify(itemList, null, 2)
     const content = new Blob([data])
     const urlObject = window.URL || window.webkitURL || window
@@ -143,3 +58,86 @@ function exportJSONFile(itemList: any) {
   }
 }
 </script>
+
+<template>
+  <div w-500px>
+    <el-table :data="questTableData">
+      <el-table-column prop="name" align="center">
+        <template #header>
+          <div
+            class="icon-btn" m-auto dark:i-carbon-moon i-carbon-sun
+            @click="toggleDark()"
+          />
+        </template>
+        <template #default="{ row }">
+          <img w-full m-auto :src="getImgSrc(row.id)">
+        </template>
+      </el-table-column>
+      <el-table-column prop="blueChest" align="center">
+        <template #header="{ column }">
+          <img w-30px m-auto :src="getImgSrc(column.property)">
+        </template>
+        <template #default="{ row }">
+          <el-tooltip effect="dark" placement="top">
+            <template #content>
+              总次数：{{ row.count }}<br>
+              蓝箱率：{{
+                ((row.blueChest / row.count || 0) * 100).toFixed(1)
+              }}%
+            </template>
+            {{ row.blueChest }}
+          </el-tooltip>
+        </template>
+      </el-table-column>
+      <el-table-column prop="goldBrick" align="center">
+        <template #header="{ column }">
+          <img w-30px m-auto :src="getImgSrc(column.property)">
+        </template>
+        <template #default="{ row }">
+          <el-tooltip effect="dark" placement="top">
+            <template #content>
+              蓝箱金率：{{ ((row.goldBrick / row.blueChest || 0) * 100).toFixed(1) }}%
+              <br>
+              已经{{ row.lastBlueChestCount }}个蓝箱没出金
+            </template>
+            {{ row.goldBrick }}
+          </el-tooltip>
+        </template>
+      </el-table-column>
+      <el-table-column prop="ring3" align="center">
+        <template #header="{ column }">
+          <img w-30px m-auto :src="getImgSrc(column.property)">
+        </template>
+      </el-table-column>
+      <el-table-column prop="ring2" align="center">
+        <template #header="{ column }">
+          <img w-30px m-auto :src="getImgSrc(column.property)">
+        </template>
+      </el-table-column>
+      <el-table-column prop="ring1" align="center">
+        <template #header="{ column }">
+          <img w-30px m-auto :src="getImgSrc(column.property)">
+        </template>
+      </el-table-column>
+    </el-table>
+
+    <div flex justify-between>
+      <div>
+        <el-button m-2 size="small" type="danger" @click="resetData">
+          <div mr-1 i-carbon:reset />
+          重置
+        </el-button>
+      </div>
+      <div>
+        <el-button m-2 size="small" type="primary" @click="importData">
+          <div mr-1 i-carbon:document-import />
+          导入
+        </el-button>
+        <el-button m-2 size="small" type="primary" @click="exportData">
+          <div mr-1 i-carbon:document-export />
+          导出
+        </el-button>
+      </div>
+    </div>
+  </div>
+</template>

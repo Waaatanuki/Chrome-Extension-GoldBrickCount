@@ -1,5 +1,8 @@
-const path = require('path')
+/* eslint-disable @typescript-eslint/no-var-requires */
+/* eslint-disable @typescript-eslint/no-require-imports */
+const path = require('node:path')
 const fsPromises = require('node:fs/promises')
+
 const copyList = [{ src: 'src/assets/icon', dest: 'dist/assets' }]
 
 async function copyFile(sourcePath: string, targetPath: string) {
@@ -11,9 +14,9 @@ async function copyFile(sourcePath: string, targetPath: string) {
   for (const file of sourceFile) {
     const newSourcePath = path.resolve(sourcePath, file.name)
     const newTargetPath = path.resolve(targetPath, file.name)
-    if (file.isDirectory()) {
+    if (file.isDirectory())
       await copyFile(newSourcePath, newTargetPath)
-    }
+
     await fsPromises.copyFile(newSourcePath, newTargetPath)
   }
 }
@@ -21,10 +24,11 @@ async function copyFile(sourcePath: string, targetPath: string) {
 async function copyListFile() {
   try {
     await fsPromises.copyFile('manifest.json', 'dist/manifest.json')
-    copyList.forEach(async item => {
+    copyList.forEach(async (item) => {
       await copyFile(item.src, item.dest)
     })
-  } catch (error) {
+  }
+  catch (error) {
     console.log(error)
   }
 }

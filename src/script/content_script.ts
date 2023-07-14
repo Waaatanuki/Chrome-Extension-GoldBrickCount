@@ -1,3 +1,5 @@
+/* eslint-disable no-alert */
+/* eslint-disable no-console */
 const TARGET_ITEM = ['10_138', '10_59', '10_79', '10_534', '10_546']
 const RAID_NAME = ['cb', 'tuyobaha', 'tuyobaha', 'akx', 'gurande']
 const re = /waaatanuki.[a-zA-Z]+.io\/gbf-app/
@@ -41,9 +43,9 @@ const defaultQuestData = [
   },
 ]
 
-chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   console.log(message)
-  if (message.todo == 'getBattleResult') {
+  if (message.todo === 'getBattleResult') {
     const start = setInterval(async () => {
       if (!urlREG.test(document.URL)) {
         clearInterval(start)
@@ -58,67 +60,53 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
         const result: any = {}
         for (let i = 0; i < TARGET_ITEM.length; i++) {
           if (
-            document.querySelector(
-              ".prt-item-list div[data-key='" + TARGET_ITEM[i] + "']"
-            ) &&
-            !document.querySelector(".prt-item-list div[data-item-kind='1']")
+            document.querySelector(`.prt-item-list div[data-key='${TARGET_ITEM[i]}']`)
+            && !document.querySelector('.prt-item-list div[data-item-kind=\'1\']')
           ) {
             result.timestamp = Date.now()
             result.raidName = RAID_NAME[i]
 
-            const goldBrickEl = document.querySelector(
-              ".prt-item-list div[data-key='17_20004']"
-            )
-            result.goldBrick =
-              goldBrickEl instanceof HTMLElement
-                ? goldBrickEl.dataset.box
-                : false
+            const goldBrickEl = document.querySelector('.prt-item-list div[data-key=\'17_20004\']')
+            result.goldBrick = goldBrickEl instanceof HTMLElement ? goldBrickEl.dataset.box : false
 
             result.goldBrick && sendResponse(true)
 
-            const blueChestsEl = document.querySelector(
-              ".prt-item-list div[data-box='11']"
-            )
-            result.blueChests =
-              blueChestsEl instanceof HTMLElement
-                ? blueChestsEl.dataset.key
-                : false
+            const blueChestsEl = document.querySelector('.prt-item-list div[data-box=\'11\']')
+            result.blueChests = blueChestsEl instanceof HTMLElement ? blueChestsEl.dataset.key : false
 
             break
           }
         }
 
-        if (Object.keys(result).length == 0) return
+        if (Object.keys(result).length === 0)
+          return
 
         await chrome.storage.local.set({ [id]: result })
 
         const storage = await chrome.storage.local.get('QuestTableData')
-        const tableData: any[] = storage.QuestTableData
-          ? Object.values(storage.QuestTableData)
-          : defaultQuestData
+        const tableData: any[] = storage.QuestTableData ? Object.values(storage.QuestTableData) : defaultQuestData
 
         try {
-          const targetQuestInfo = tableData.find(
-            (quest: any) => quest.raidName == result.raidName
-          )
+          const targetQuestInfo = tableData.find((quest: any) => quest.raidName === result.raidName)
           if (targetQuestInfo) {
             targetQuestInfo.count++
 
             result.blueChests && targetQuestInfo.blueChest++
-            result.goldBrick == '11' && targetQuestInfo.goldBrick++
-            result.blueChests == '73_1' && targetQuestInfo.ring1++
-            result.blueChests == '73_2' && targetQuestInfo.ring2++
-            result.blueChests == '73_3' && targetQuestInfo.ring3++
+            result.goldBrick === '11' && targetQuestInfo.goldBrick++
+            result.blueChests === '73_1' && targetQuestInfo.ring1++
+            result.blueChests === '73_2' && targetQuestInfo.ring2++
+            result.blueChests === '73_3' && targetQuestInfo.ring3++
 
-            targetQuestInfo.lastBlueChestCount =
-              result.blueChests == '17_20004'
+            targetQuestInfo.lastBlueChestCount
+              = result.blueChests === '17_20004'
                 ? 0
                 : result.blueChests
-                ? targetQuestInfo.lastBlueChestCount + 1
-                : targetQuestInfo.lastBlueChestCount
+                  ? targetQuestInfo.lastBlueChestCount + 1
+                  : targetQuestInfo.lastBlueChestCount
           }
           await chrome.storage.local.set({ QuestTableData: tableData })
-        } catch (error) {
+        }
+        catch (error) {
           console.log(error)
           console.log('数据异常')
         }
@@ -126,7 +114,7 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
     }, 200)
   }
 
-  if (message.todo == 'importData') {
+  if (message.todo === 'importData') {
     if (re.test(document.URL)) {
       console.log('开始导入...')
       const DBOpenRequest = window.indexedDB.open('gbfApp')
@@ -135,20 +123,19 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
       DBOpenRequest.onupgradeneeded = function (event) {
         const request = event.target as IDBOpenDBRequest
         db = request.result
-        if (!db.objectStoreNames.contains('GoldBrick')) {
+        if (!db.objectStoreNames.contains('GoldBrick'))
           db.createObjectStore('GoldBrick')
-        }
       }
       DBOpenRequest.onsuccess = async function (event) {
         const request = event.target as IDBOpenDBRequest
         db = request.result
 
-        chrome.storage.local.get(null, function (result) {
+        chrome.storage.local.get(null, (result) => {
           const questTableData = result.QuestTableData
           delete result.QuestTableData
           const rawData: { [key: string]: any }[] = []
 
-          Object.keys(result).forEach(key => {
+          Object.keys(result).forEach((key) => {
             rawData.push({ [key]: result[key] })
           })
 
@@ -160,13 +147,15 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
                 console.log('导入成功,并清空chrome storage。')
                 location.reload()
               })
-            } else {
+            }
+            else {
               console.log(err)
             }
           })
         })
       }
-    } else {
+    }
+    else {
       alert('只能在gbfApp网站导入')
     }
   }
@@ -176,25 +165,26 @@ function importFromJson(
   idbDatabase: IDBDatabase,
   storeName: string,
   data: { [key: string]: any }[],
-  cb: Function
+  cb: any,
 ) {
   const length = idbDatabase.objectStoreNames.length
 
   if (length === 0 || data.length === 0) {
     cb(null)
-  } else {
+  }
+  else {
     const transaction = idbDatabase.transaction(storeName, 'readwrite')
     transaction.oncomplete = () => cb(null)
     transaction.onerror = event => cb(event)
 
     const objectStore = transaction.objectStore(storeName)
 
-    data.forEach(item => {
+    data.forEach((item) => {
       const request = objectStore.put(
         Object.values(item)[0],
-        Object.keys(item)[0]
+        Object.keys(item)[0],
       )
-      request.onerror = event => {
+      request.onerror = (event) => {
         cb(event)
       }
     })

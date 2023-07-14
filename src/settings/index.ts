@@ -18,7 +18,7 @@ const QUEST_LIST = [
 
 export const defaultQuestData: QuestTableData[] = []
 
-QUEST_LIST.forEach(quest => {
+QUEST_LIST.forEach((quest) => {
   defaultQuestData.push({
     id: quest.id,
     alias: quest.alias,

@@ -15,9 +15,10 @@
     "build": "vite build && npm run copy",
     "watch": "npm-watch",
     "copy": "ts-node ./scripts/copyAssets.ts",
-    "prettier": "prettier --write ."
+    "lint": "eslint --cache ."
   },
   "devDependencies": {
+    "@antfu/eslint-config": "^0.39.7",
     "@iconify-json/carbon": "^1.1.16",
     "@types/chrome": "^0.0.220",
     "@types/node": "^18.14.6",
@@ -25,9 +26,9 @@
     "@vitejs/plugin-vue": "^4.0.0",
     "@vueuse/core": "^9.13.0",
     "element-plus": "^2.2.36",
+    "eslint": "^8.44.0",
     "fast-glob": "^3.2.12",
     "npm-watch": "^0.11.0",
-    "prettier": "^2.8.4",
     "unocss": "^0.50.4",
     "unplugin-auto-import": "^0.15.1",
     "unplugin-icons": "^0.15.3",
