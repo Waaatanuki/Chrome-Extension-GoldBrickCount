@@ -5,7 +5,7 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
     chrome.tabs.sendMessage(tabId, { todo: 'getBattleResult' }).then((res) => {
       if (res) {
         chrome.notifications.create({
-          iconUrl: `/assets/${res}.png`,
+          iconUrl: `/assets/${res.name}.png`,
           message: ' Get☆Daze!',
           type: 'basic',
           title: '通知',

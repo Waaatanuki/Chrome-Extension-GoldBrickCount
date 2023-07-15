@@ -76,7 +76,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         for (let i = 0; i < TARGET_ITEM.length; i++) {
           if (
             document.querySelector(`.prt-item-list div[data-key='${TARGET_ITEM[i]}']`)
-            && !document.querySelector('.prt-item-list div[data-item-kind=\'1\']')
+          && !document.querySelector('.prt-item-list div[data-item-kind=\'1\']')
           ) {
             result.timestamp = Date.now()
             result.raidName = RAID_NAME[i]
@@ -84,7 +84,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
             const goldBrickEl = document.querySelector('.prt-item-list div[data-key=\'17_20004\']')
             result.goldBrick = goldBrickEl instanceof HTMLElement ? goldBrickEl.dataset.box : false
 
-            result.goldBrick && sendResponse('goldbrick')
+            result.goldBrick && sendResponse({ name: 'goldbrick' })
 
             const blueChestsEl = document.querySelector('.prt-item-list div[data-box=\'11\']')
             result.blueChests = blueChestsEl instanceof HTMLElement ? blueChestsEl.dataset.key : false
@@ -98,10 +98,10 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
             result.timestamp = Date.now()
             result.raidName = Revans_RAID_NAME[i]
 
-            const sandglassEl = document.querySelector('.prt-item-list div[data-key=\'10_585\']')
+            const sandglassEl = document.querySelector('.prt-item-list div[data-key=\'10_215\']')
             result.sandglass = sandglassEl instanceof HTMLElement ? sandglassEl.dataset.box : false
 
-            result.sandglass && sendResponse('sandglass')
+            result.sandglass && sendResponse({ name: 'sandglass' })
 
             const blueChestsEl = document.querySelector('.prt-item-list div[data-box=\'11\']')
             result.blueChests = blueChestsEl instanceof HTMLElement ? blueChestsEl.dataset.key : false
@@ -119,9 +119,6 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         const tableData: any[] = storage.QuestTableData ? Object.values(storage.QuestTableData) : defaultQuestData
 
         try {
-          console.log(tableData)
-          console.log(result)
-
           if (!tableData.some(quest => quest.raidName === result.raidName))
             tableData.push(defaultQuestData.find(quest => quest.raidName === result.raidName))
 
@@ -136,7 +133,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
           result.blueChests === '10_215' && targetQuestInfo.sandglass++
 
           targetQuestInfo.lastBlueChestCount
-              = result.blueChests === '17_20004'
+            = result.blueChests === '17_20004'
               ? 0
               : result.blueChests
                 ? targetQuestInfo.lastBlueChestCount || 0 + 1
@@ -197,6 +194,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
       alert('只能在gbfApp网站导入')
     }
   }
+  return true
 })
 
 function importFromJson(
