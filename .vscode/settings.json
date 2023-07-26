@@ -6,5 +6,11 @@
   "files.associations": {
     "*.css": "postcss"
   },
-  "vue.codeActions.enabled": false
+  "vue.codeActions.enabled": false,
+  "prettier.enable": false,
+  "editor.formatOnSave": true,
+  "eslint.format.enable": true,
+  "[json]": {
+    "editor.defaultFormatter": "vscode.json-language-features"
+  }
 }
