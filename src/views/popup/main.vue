@@ -1,7 +1,7 @@
 <!-- eslint-disable no-console -->
 <!-- eslint-disable no-alert -->
 <script setup lang="ts">
-import { defaultQuestData } from '@/settings'
+import { defaultQuestData } from '~/settings'
 
 const questTableData = ref<any>([])
 const diasporaData = ref<any>()

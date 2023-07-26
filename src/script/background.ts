@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 import { load } from 'cheerio'
-import { storageDemo } from '@/logic/storage'
+import { storageDemo } from '~/logic/storage'
 
 (() => {
   console.log(storageDemo)
