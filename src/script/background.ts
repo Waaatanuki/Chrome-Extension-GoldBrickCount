@@ -1,47 +1,98 @@
-/* eslint-disable no-console */
 import { load } from 'cheerio'
-import { storageDemo } from '~/logic/storage'
+
+import type { GoldBrickData } from '~/logic/storage'
+
+import { goldBrickData } from '~/logic/storage'
+import { isForbiddenUrl } from '~/env'
+import { goldBrickRaidList, noticeItem } from '~/constants';
 
 (() => {
-  console.log(storageDemo)
-  console.log(1233123333)
-
-  const $ = load('<h2 class="title">Hello world</h2>')
-
-  console.log($('h2.title').text())
-
   const resultUrlREG = /granbluefantasy.jp\/#result_multi\/[0-9]+/
   chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
-    if (changeInfo.url && tab.favIconUrl && resultUrlREG.test(changeInfo.url)) {
+    // if (changeInfo.url && tab.favIconUrl && resultUrlREG.test(changeInfo.url)) {
+    if (changeInfo.url && changeInfo.url.includes('foo') && !isForbiddenUrl(changeInfo.url)) {
       chrome.tabs.sendMessage(tabId, { todo: 'getBattleResult' }).then((res) => {
-        if (res) {
-          chrome.notifications.create({
-            iconUrl: `/assets/${res.name}.png`,
-            message: ' Get☆Daze!',
-            type: 'basic',
-            title: '通知',
+        if (!res?.domStr)
+          return
+
+        const $ = load(res.domStr)
+        const treasureList: Treasure[] = []
+
+        $('.btn-treasure-item').each((i, elem) => {
+          const count = $(elem).find('.prt-article-count')?.text().split('x')[1]
+          treasureList.push({
+            box: String($(elem).data().box),
+            key: $(elem).data().key as string,
+            count: count ? Number(count) : 1,
           })
-        }
+        })
+        showNotifications(treasureList)
+        checkGoldBrick(treasureList, res.resultId)
       })
     }
   })
 
-  const setBadge = function () {
-    chrome.storage.local.get(null, (items) => {
-      const total = Object.hasOwnProperty.call(items, 'QuestTableData')
-        ? Object.keys(items).length - 1
-        : Object.keys(items).length
-      const color = total <= 100 ? '#25b506' : total <= 200 ? '#becc00' : '#be0000'
-      chrome.action.setBadgeText({ text: total.toString() }, () => {
-        chrome.action.setBadgeBackgroundColor({ color })
+  function showNotifications(treasureList: Treasure[]) {
+    const hitTreasure = treasureList.find(treasure => noticeItem.some(item => item.key === treasure.key))
+    if (hitTreasure) {
+      chrome.notifications.create({
+        iconUrl: `/assets/${hitTreasure.key}.png`,
+        message: ' Get☆Daze!',
+        type: 'basic',
+        title: '通知',
       })
+    }
+  }
+
+  function checkGoldBrick(treasureList: Treasure[], resultId: string) {
+    // todo: 增加是否掉落武器检验,排除小巴
+    const hitRaid = goldBrickRaidList.find(raid =>
+      treasureList.reduce((pre, cur) => {
+        if (raid.targetItem.includes(cur.key))
+          pre = true
+        return pre
+      }, false),
+    )
+
+    if (!hitRaid)
+      return
+
+    const data: GoldBrickData = {
+      raidName: hitRaid.name,
+      resultId,
+      timestamp: Date.now(),
+    }
+    treasureList.forEach((treasure) => {
+      if (treasure.box === '11')
+        data.blueChests = treasure.key
+      if (treasure.key === '17_20004')
+        data.goldBrick = treasure.box
+    })
+    goldBrickData.value.push(data)
+  }
+
+  function setBadge() {
+    const total = goldBrickData.value.length
+    const color = total <= 100 ? '#25b506' : total <= 200 ? '#becc00' : '#be0000'
+    chrome.action.setBadgeText({ text: total.toString() }, () => {
+      chrome.action.setBadgeBackgroundColor({ color })
     })
   }
 
   chrome.runtime.onInstalled.addListener(() => {
-    chrome.storage.local.remove('materialInfo')
     setBadge()
   })
 
-  chrome.storage.onChanged.addListener(() => setBadge())
+  chrome.storage.onChanged.addListener((changes) => {
+    if (changes.goldBrickData) {
+      goldBrickData.value = JSON.parse(changes.goldBrickData.newValue)
+      setBadge()
+    }
+  })
 })()
+
+interface Treasure {
+  box: string
+  key: string
+  count: number
+}
