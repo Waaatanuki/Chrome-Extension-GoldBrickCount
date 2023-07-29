@@ -10,7 +10,7 @@ const eternitySandDataInit = Raid_EternitySand.reduce((pre, cur) => {
   return pre
 }, [] as RaidInfo[])
 
-export const goldBrickTableDataInit = Raid_GoldBrick.slice(0, 3).reduce((pre, cur) => {
+export const goldBrickTableDataInit = Raid_GoldBrick.reduce((pre, cur) => {
   const data: GoldBrickTableData = {
     quest_id: cur.quest_id,
     total: 0,
@@ -72,6 +72,7 @@ export interface GoldBrickData {
 export interface BattleMemo {
   battle_id: string
   quest_id: string
+  timestamp: number
 }
 
 export interface DropInfo {

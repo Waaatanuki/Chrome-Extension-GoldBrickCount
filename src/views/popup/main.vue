@@ -1,7 +1,9 @@
 <!-- eslint-disable no-console -->
 <!-- eslint-disable no-alert -->
 <script setup lang="ts">
-import { battleMemo, goldBrickData, goldBrickTableData, goldBrickTableDataInit } from '~/logic/storage'
+import { goldBrickData, goldBrickTableData, goldBrickTableDataInit } from '~/logic/storage'
+
+const goldBrickTableShowData = computed(() => goldBrickTableData.value.filter(raid => raid.quest_id !== '303141'))
 
 function openOptionsPage() {
   chrome.runtime.openOptionsPage()
@@ -9,6 +11,7 @@ function openOptionsPage() {
 
 function resetData() {
   goldBrickTableData.value = goldBrickTableDataInit
+  ElMessage.success('金本数据已重置')
 }
 
 function importData() {
@@ -56,7 +59,7 @@ function exportJSONFile(itemList: any) {
 
 <template>
   <div w-500px>
-    <el-table :data="goldBrickTableData">
+    <el-table :data="goldBrickTableShowData">
       <el-table-column prop="name" align="center">
         <template #header>
           <div
@@ -75,9 +78,9 @@ function exportJSONFile(itemList: any) {
         <template #default="{ row }">
           <el-tooltip effect="dark" placement="top">
             <template #content>
-              总次数：{{ row.count }}<br>
+              总次数：{{ row.total }}<br>
               蓝箱率：{{
-                ((row.blueChest / row.count || 0) * 100).toFixed(1)
+                ((row.blueChest / row.total || 0) * 100).toFixed(1)
               }}%
             </template>
             {{ row.blueChest }}
@@ -137,8 +140,5 @@ function exportJSONFile(itemList: any) {
         </el-button>
       </div>
     </div>
-    <el-card v-for="data in battleMemo" :key="data.quest_id">
-      {{ data }}
-    </el-card>
   </div>
 </template>
