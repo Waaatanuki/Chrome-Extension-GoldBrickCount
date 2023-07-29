@@ -1,24 +1,14 @@
 <!-- eslint-disable no-console -->
 <!-- eslint-disable no-alert -->
 <script setup lang="ts">
-import { defaultQuestData } from '~/settings'
-import { goldBrickData } from '~/logic/storage'
+import { battleMemo, goldBrickData, goldBrickTableData, goldBrickTableDataInit } from '~/logic/storage'
 
-const questTableData = ref<any>([])
-const diasporaData = ref<any>()
-onMounted(() => {
-  chrome.storage.local.get('QuestTableData').then((result) => {
-    questTableData.value = result.QuestTableData
-      ? Object.values(result.QuestTableData)
-      : defaultQuestData
-    diasporaData.value = questTableData.value[3] || defaultQuestData[3]
-    questTableData.value = questTableData.value.slice(0, 3)
-  })
-})
+function openOptionsPage() {
+  chrome.runtime.openOptionsPage()
+}
 
-async function resetData() {
-  questTableData.value = defaultQuestData
-  await chrome.storage.local.set({ QuestTableData: defaultQuestData })
+function resetData() {
+  goldBrickTableData.value = goldBrickTableDataInit
 }
 
 function importData() {
@@ -42,8 +32,8 @@ function exportData() {
     return ElMessage.info('当前没有可导出的数据')
   const exportData = goldBrickData.value.reduce((pre, cur) => {
     const val: any = { ...cur }
-    delete val.resultId
-    pre.push({ [cur.resultId]: val })
+    delete val.battleId
+    pre.push({ [cur.battleId]: val })
     return pre
   }, [] as any[])
   exportJSONFile(exportData)
@@ -66,7 +56,7 @@ function exportJSONFile(itemList: any) {
 
 <template>
   <div w-500px>
-    <el-table :data="questTableData">
+    <el-table :data="goldBrickTableData">
       <el-table-column prop="name" align="center">
         <template #header>
           <div
@@ -75,7 +65,7 @@ function exportJSONFile(itemList: any) {
           />
         </template>
         <template #default="{ row }">
-          <img w-full m-auto :src="getImgSrc(row.id)">
+          <img w-full m-auto :src="getImgSrc(row.quest_id)">
         </template>
       </el-table-column>
       <el-table-column prop="blueChest" align="center">
@@ -141,30 +131,14 @@ function exportJSONFile(itemList: any) {
           <div mr-1 i-carbon:document-export />
           导出
         </el-button>
+        <el-button m-2 size="small" type="primary" @click="openOptionsPage">
+          <div mr-1 i-carbon:notebook />
+          更多
+        </el-button>
       </div>
     </div>
-    <div p-2>
-      <el-descriptions border title="机神">
-        <el-descriptions-item label="总次数" align="center">
-          {{ diasporaData?.count }}
-        </el-descriptions-item>
-        <el-descriptions-item label="蓝箱" align="center">
-          <el-tooltip effect="dark" placement="top">
-            <template #content>
-              蓝箱率：{{ ((diasporaData.blueChest / diasporaData.count || 0) * 100).toFixed(1) }}%
-            </template>
-            {{ diasporaData?.blueChest }}
-          </el-tooltip>
-        </el-descriptions-item>
-        <el-descriptions-item label="沙漏" align="center">
-          <el-tooltip effect="dark" placement="top">
-            <template #content>
-              蓝箱沙漏率：{{ ((diasporaData.sandglass / diasporaData.blueChest || 0) * 100).toFixed(1) }}%
-            </template>
-            {{ diasporaData?.sandglass }}
-          </el-tooltip>
-        </el-descriptions-item>
-      </el-descriptions>
-    </div>
+    <el-card v-for="data in battleMemo" :key="data.quest_id">
+      {{ data }}
+    </el-card>
   </div>
 </template>

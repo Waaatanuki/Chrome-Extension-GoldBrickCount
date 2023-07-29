@@ -35,6 +35,7 @@
       "128": "./assets/icon.png"
     }
   },
+  "options_page": "src/views/options/main.html",
   "content_scripts": [
     {
       "matches": [

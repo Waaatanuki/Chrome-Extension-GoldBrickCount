@@ -1,16 +1,47 @@
 import { load } from 'cheerio'
-
-import type { GoldBrickData } from '~/logic/storage'
-
-import { goldBrickData } from '~/logic/storage'
+import type { BattleMemo, GoldBrickData } from '~/logic/storage'
+import { battleMemo, eternitySandData, goldBrickData, goldBrickTableData } from '~/logic/storage'
 import { isForbiddenUrl } from '~/env'
-import { goldBrickRaidList, noticeItem } from '~/constants';
+import { noticeItem } from '~/constants'
+import { Raid_EternitySand, Raid_GoldBrick, targetRaid } from '~/constants/raid'
 
 (() => {
+  const raidUrlREG = /granbluefantasy.jp\/#raid_multi\/[0-9]+/
   const resultUrlREG = /granbluefantasy.jp\/#result_multi\/[0-9]+/
+  let isSecond = true
   chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
-    // if (changeInfo.url && tab.favIconUrl && resultUrlREG.test(changeInfo.url)) {
-    if (changeInfo.url && changeInfo.url.includes('foo') && !isForbiddenUrl(changeInfo.url)) {
+    // 记录id与副本名称
+    if (changeInfo.status === 'complete' && tab.url && raidUrlREG.test(tab.url) && !isForbiddenUrl(tab.url)) {
+      isSecond = !isSecond
+      if (!isSecond)
+        return
+
+      const battle_id = tab.url.match(/[0-9]+/g)![0]
+      const hitMemo = battleMemo.value.find(memo => memo.battle_id === battle_id)
+      if (hitMemo)
+        return
+
+      chrome.tabs.sendMessage(tabId, { todo: 'getRaidName' }).then((res) => {
+        if (!res?.questName)
+          return
+
+        const hit = targetRaid.find(r => r.tweet_name_en === res.questName || r.tweet_name_jp === res.questName)
+        if (!hit)
+          return
+
+        battleMemo.value.push({ battle_id, quest_id: hit.quest_id })
+
+        if (battleMemo.value.length > 15)
+          battleMemo.value.shift()
+      })
+    }
+
+    if (changeInfo.url && resultUrlREG.test(changeInfo.url) && tab.favIconUrl && !isForbiddenUrl(changeInfo.url)) {
+      // 记录id与掉落结果
+      const battle_id = changeInfo.url.match(/[0-9]+/g)![0]
+      const hitMemo = battleMemo.value.find(memo => memo.battle_id === battle_id)
+      if (!hitMemo)
+        return
       chrome.tabs.sendMessage(tabId, { todo: 'getBattleResult' }).then((res) => {
         if (!res?.domStr)
           return
@@ -27,7 +58,10 @@ import { goldBrickRaidList, noticeItem } from '~/constants';
           })
         })
         showNotifications(treasureList)
-        checkGoldBrick(treasureList, res.resultId)
+        checkGoldBrick(treasureList, hitMemo)
+        checkEternitySand(treasureList, hitMemo)
+
+        battleMemo.value = battleMemo.value.filter(memo => memo.battle_id !== battle_id)
       })
     }
   })
@@ -44,29 +78,61 @@ import { goldBrickRaidList, noticeItem } from '~/constants';
     }
   }
 
-  function checkGoldBrick(treasureList: Treasure[], resultId: string) {
-    // todo: 增加是否掉落武器检验,排除小巴
-    const hitRaid = goldBrickRaidList.find(raid =>
-      treasureList.reduce((pre, cur) => {
-        if (raid.targetItem.includes(cur.key))
-          pre = true
-        return pre
-      }, false),
-    )
-
-    if (!hitRaid)
+  function checkEternitySand(treasureList: Treasure[], hitMemo: BattleMemo) {
+    const raid = Raid_EternitySand.find(raid => raid.quest_id === hitMemo.quest_id)
+    if (!raid)
       return
 
-    const data: GoldBrickData = {
-      raidName: hitRaid.name,
-      resultId,
-      timestamp: Date.now(),
+    let hitRaid = eternitySandData.value.find(raid => raid.quest_id === hitMemo.quest_id)
+    if (!hitRaid) {
+      hitRaid = { ...raid, total: 0, blueChest: 0, eternitySand: 0 }
+      eternitySandData.value.push(hitRaid)
     }
+
+    hitRaid.total!++
     treasureList.forEach((treasure) => {
-      if (treasure.box === '11')
+      treasure.box === '11' && hitRaid!.blueChest!++
+      treasure.key === '10_215' && hitRaid!.eternitySand!++
+    })
+  }
+
+  function checkGoldBrick(treasureList: Treasure[], hitMemo: BattleMemo) {
+    const raid = Raid_GoldBrick.find(raid => raid.quest_id === hitMemo.quest_id)
+    if (!raid)
+      return
+
+    let hitRaid = goldBrickTableData.value.find(raid => raid.quest_id === hitMemo.quest_id)
+    if (!hitRaid) {
+      hitRaid = {
+        quest_id: raid.quest_id,
+        total: 0,
+        blueChest: 0,
+        goldBrick: 0,
+        ring1: 0,
+        ring2: 0,
+        ring3: 0,
+        lastBlueChestCount: 0,
+      }
+      goldBrickTableData.value.push(hitRaid)
+    }
+
+    const data: GoldBrickData = { raidName: raid.raidName, battleId: hitMemo.battle_id, timestamp: Date.now() }
+
+    hitRaid.total!++
+    treasureList.forEach((treasure) => {
+      if (treasure.box === '11') {
         data.blueChests = treasure.key
-      if (treasure.key === '17_20004')
+
+        hitRaid!.blueChest!++
+        treasure.key === '73_1' && hitRaid!.ring1++
+        treasure.key === '73_2' && hitRaid!.ring2++
+        treasure.key === '73_3' && hitRaid!.ring3++
+        hitRaid!.lastBlueChestCount = treasure.key === '17_20004' ? 0 : hitRaid!.lastBlueChestCount++
+      }
+      if (treasure.key === '17_20004') {
         data.goldBrick = treasure.box
+        hitRaid!.goldBrick++
+      }
     })
     goldBrickData.value.push(data)
   }
@@ -88,6 +154,8 @@ import { goldBrickRaidList, noticeItem } from '~/constants';
       goldBrickData.value = JSON.parse(changes.goldBrickData.newValue)
       setBadge()
     }
+    if (changes.battleMemo)
+      battleMemo.value = JSON.parse(changes.battleMemo.newValue)
   })
 })()
 

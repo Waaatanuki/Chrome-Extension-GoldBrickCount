@@ -1,128 +1,37 @@
 /* eslint-disable no-alert */
 /* eslint-disable no-console */
-const TARGET_ITEM = ['10_138', '10_59', '10_79', '10_534', '10_546']
-const RAID_NAME = ['cb', 'tuyobaha', 'tuyobaha', 'akx', 'gurande']
-const Revans_RAID_ITEM = ['10_585']
-const Revans_RAID_NAME = ['Diaspora']
-const re = /waaatanuki.[a-zA-Z]+.io\/gbf-app/
-const urlREG = /granbluefantasy.jp\/#result_multi\/[0-9]+/
-const defaultQuestData = [
-  {
-    alias: '大巴',
-    id: 301061,
-    raidName: 'tuyobaha',
-    count: 0,
-    blueChest: 0,
-    goldBrick: 0,
-    ring1: 0,
-    ring2: 0,
-    ring3: 0,
-    lastBlueChestCount: 0,
-  },
-  {
-    alias: '阿卡夏',
-    id: 303251,
-    raidName: 'akx',
-    count: 0,
-    blueChest: 0,
-    goldBrick: 0,
-    ring1: 0,
-    ring2: 0,
-    ring3: 0,
-    lastBlueChestCount: 0,
-  },
-  {
-    alias: '大公',
-    id: 305161,
-    raidName: 'gurande',
-    count: 0,
-    blueChest: 0,
-    goldBrick: 0,
-    ring1: 0,
-    ring2: 0,
-    ring3: 0,
-    lastBlueChestCount: 0,
-  },
-  {
-    alias: '机神',
-    id: 305391,
-    raidName: 'Diaspora',
-    count: 0,
-    blueChest: 0,
-    goldBrick: 0,
-    ring1: 0,
-    ring2: 0,
-    ring3: 0,
-    lastBlueChestCount: 0,
-    sandglass: 0,
-  },
-]
+const raidUrlREG = /granbluefantasy.jp\/#raid_multi\/[0-9]+/
+const resultUrlREG = /granbluefantasy.jp\/#result_multi\/[0-9]+/
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   console.log(message)
+
+  if (message.todo === 'getRaidName') {
+    const start = setInterval(() => {
+      if (!raidUrlREG.test(document.URL))
+        clearInterval(start)
+
+      console.log('监测到战斗开始')
+      const targetEl = document.querySelector('.enemy-info .name')
+      if (targetEl && targetEl.innerHTML) {
+        clearInterval(start)
+        sendResponse({ questName: targetEl.innerHTML })
+      }
+    }, 200)
+  }
+
   if (message.todo === 'getBattleResult') {
     const start = setInterval(() => {
-      // if (!urlREG.test(document.URL))
-      if (!document.URL.includes('foo'))
+      // if (!document.URL.includes('foo'))
+      if (!resultUrlREG.test(document.URL))
         clearInterval(start)
 
       console.log('监测到结算')
-      const itemListEl = document.querySelector('.prt-item-list')
-      const idRE = document.URL.match(/[0-9]+/g)
-      if (itemListEl && idRE) {
+      const targetEl = document.querySelector('.prt-item-list')
+
+      if (targetEl) {
         clearInterval(start)
-        sendResponse({
-          resultId: idRE[0],
-          domStr: itemListEl.innerHTML,
-        })
-        // const result: any = {}
-        // for (let i = 0; i < Revans_RAID_ITEM.length; i++) {
-        //   if (document.querySelector(`.prt-item-list div[data-key='${Revans_RAID_ITEM[i]}']`)) {
-        //     result.timestamp = Date.now()
-        //     result.raidName = Revans_RAID_NAME[i]
-
-        //     const sandglassEl = document.querySelector('.prt-item-list div[data-key=\'10_215\']')
-        //     result.sandglass = sandglassEl instanceof HTMLElement ? sandglassEl.dataset.box : false
-
-        //     result.sandglass && sendResponse({ name: 'sandglass' })
-
-        //     const blueChestsEl = document.querySelector('.prt-item-list div[data-box=\'11\']')
-        //     result.blueChests = blueChestsEl instanceof HTMLElement ? blueChestsEl.dataset.key : false
-
-        //     break
-        //   }
-        // }
-
-        // const storage = await chrome.storage.local.get('QuestTableData')
-        // const tableData: any[] = storage.QuestTableData ? Object.values(storage.QuestTableData) : defaultQuestData
-
-        // try {
-        //   if (!tableData.some(quest => quest.raidName === result.raidName))
-        //     tableData.push(defaultQuestData.find(quest => quest.raidName === result.raidName))
-
-        //   const targetQuestInfo = tableData.find(quest => quest.raidName === result.raidName)
-
-        //   targetQuestInfo.count++
-        //   result.blueChests && targetQuestInfo.blueChest++
-        //   result.goldBrick === '11' && targetQuestInfo.goldBrick++
-        //   result.blueChests === '73_1' && targetQuestInfo.ring1++
-        //   result.blueChests === '73_2' && targetQuestInfo.ring2++
-        //   result.blueChests === '73_3' && targetQuestInfo.ring3++
-        //   result.blueChests === '10_215' && targetQuestInfo.sandglass++
-
-        //   targetQuestInfo.lastBlueChestCount
-        //     = result.blueChests === '17_20004'
-        //       ? 0
-        //       : result.blueChests
-        //         ? targetQuestInfo.lastBlueChestCount || 0 + 1
-        //         : targetQuestInfo.lastBlueChestCount || 0
-
-        //   await chrome.storage.local.set({ QuestTableData: tableData })
-        // }
-        // catch (error) {
-        //   console.log(error)
-        //   console.log('数据异常')
-        // }
+        sendResponse({ domStr: targetEl.outerHTML })
       }
     }, 200)
   }
@@ -171,8 +80,8 @@ function importFromJson(idbDatabase: IDBDatabase, storeName: string, data: GoldB
     const objectStore = transaction.objectStore(storeName)
     data.forEach((item) => {
       const value: any = { ...item }
-      const key = item.resultId
-      delete value.resultId
+      const key = item.battleId
+      delete value.battleId
       const request = objectStore.put(value, key)
       request.onerror = (event) => {
         cb(event)
@@ -184,7 +93,7 @@ function importFromJson(idbDatabase: IDBDatabase, storeName: string, data: GoldB
 interface GoldBrickData {
   timestamp: number
   raidName: string
-  resultId: string
+  battleId: string
   blueChests?: string
   goldBrick?: string
 }
