@@ -1,7 +1,7 @@
 import { useStorageLocal } from '~/composables/useStorageLocal'
 import { Raid_EternitySand, Raid_GoldBrick } from '~/constants/raid'
 
-const eternitySandDataInit = Raid_EternitySand.reduce((pre, cur) => {
+export const eternitySandDataInit = Raid_EternitySand.reduce((pre, cur) => {
   const data: RaidInfo = { ...cur }
   data.visiable = true
   data.total = 0
