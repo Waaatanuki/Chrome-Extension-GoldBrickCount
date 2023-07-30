@@ -12,6 +12,7 @@ export const Raid_EternitySand = [
     stage_id: '12022',
     thumbnail_image: 'high_ennead_03',
     is_blue_treasure: true,
+    is_blue_eternitySand: false,
   },
   {
     quest_id: '305331',
@@ -26,6 +27,7 @@ export const Raid_EternitySand = [
     stage_id: '12022',
     thumbnail_image: 'high_ennead_03',
     is_blue_treasure: true,
+    is_blue_eternitySand: false,
   },
   {
     quest_id: '305341',
@@ -40,6 +42,7 @@ export const Raid_EternitySand = [
     stage_id: '12022',
     thumbnail_image: 'high_ennead_03',
     is_blue_treasure: true,
+    is_blue_eternitySand: false,
   },
   {
     quest_id: '305351',
@@ -54,6 +57,7 @@ export const Raid_EternitySand = [
     stage_id: '12022',
     thumbnail_image: 'high_ennead_03',
     is_blue_treasure: true,
+    is_blue_eternitySand: false,
   },
   {
     quest_id: '305361',
@@ -68,6 +72,7 @@ export const Raid_EternitySand = [
     stage_id: '12022',
     thumbnail_image: 'high_ennead_03',
     is_blue_treasure: true,
+    is_blue_eternitySand: false,
   },
   {
     quest_id: '305371',
@@ -82,6 +87,7 @@ export const Raid_EternitySand = [
     stage_id: '12022',
     thumbnail_image: 'high_ennead_03',
     is_blue_treasure: true,
+    is_blue_eternitySand: false,
   },
   {
     quest_id: '303241',
@@ -96,6 +102,7 @@ export const Raid_EternitySand = [
     stage_id: '12031',
     thumbnail_image: 'high_malice',
     is_blue_treasure: false,
+    is_blue_eternitySand: false,
   },
   {
     quest_id: '305151',
@@ -110,6 +117,7 @@ export const Raid_EternitySand = [
     stage_id: '12031',
     thumbnail_image: 'high_malice',
     is_blue_treasure: false,
+    is_blue_eternitySand: false,
   },
   {
     quest_id: '305251',
@@ -124,6 +132,7 @@ export const Raid_EternitySand = [
     stage_id: '12031',
     thumbnail_image: 'high_malice',
     is_blue_treasure: false,
+    is_blue_eternitySand: false,
   },
   {
     quest_id: '305271',
@@ -138,6 +147,7 @@ export const Raid_EternitySand = [
     stage_id: '12031',
     thumbnail_image: 'high_malice',
     is_blue_treasure: false,
+    is_blue_eternitySand: false,
   },
   {
     quest_id: '305291',
@@ -152,6 +162,7 @@ export const Raid_EternitySand = [
     stage_id: '12031',
     thumbnail_image: 'high_malice',
     is_blue_treasure: false,
+    is_blue_eternitySand: false,
   },
   {
     quest_id: '305481',
@@ -166,6 +177,7 @@ export const Raid_EternitySand = [
     stage_id: '12031',
     thumbnail_image: 'high_malice',
     is_blue_treasure: false,
+    is_blue_eternitySand: false,
   },
   {
     quest_id: '305191',
@@ -180,6 +192,7 @@ export const Raid_EternitySand = [
     stage_id: '12051',
     thumbnail_image: 'high_astral',
     is_blue_treasure: true,
+    is_blue_eternitySand: false,
   },
   {
     quest_id: '305201',
@@ -194,6 +207,7 @@ export const Raid_EternitySand = [
     stage_id: '12051',
     thumbnail_image: 'high_astral',
     is_blue_treasure: true,
+    is_blue_eternitySand: false,
   },
   {
     quest_id: '305211',
@@ -208,6 +222,7 @@ export const Raid_EternitySand = [
     stage_id: '12051',
     thumbnail_image: 'high_astral',
     is_blue_treasure: true,
+    is_blue_eternitySand: false,
   },
   {
     quest_id: '305221',
@@ -222,6 +237,7 @@ export const Raid_EternitySand = [
     stage_id: '12051',
     thumbnail_image: 'high_astral',
     is_blue_treasure: true,
+    is_blue_eternitySand: false,
   },
   {
     quest_id: '305231',
@@ -236,6 +252,7 @@ export const Raid_EternitySand = [
     stage_id: '12051',
     thumbnail_image: 'high_astral',
     is_blue_treasure: true,
+    is_blue_eternitySand: false,
   },
   {
     quest_id: '305241',
@@ -250,6 +267,7 @@ export const Raid_EternitySand = [
     stage_id: '12051',
     thumbnail_image: 'high_astral',
     is_blue_treasure: true,
+    is_blue_eternitySand: false,
   },
   {
     quest_id: '305381',
@@ -264,6 +282,7 @@ export const Raid_EternitySand = [
     stage_id: '12081',
     thumbnail_image: 'high_diaspora_2',
     is_blue_treasure: true,
+    is_blue_eternitySand: true,
   },
   {
     quest_id: '305391',
@@ -278,6 +297,7 @@ export const Raid_EternitySand = [
     stage_id: '12081',
     thumbnail_image: 'high_diaspora_2',
     is_blue_treasure: true,
+    is_blue_eternitySand: true,
   },
   {
     quest_id: '305401',
@@ -292,6 +312,7 @@ export const Raid_EternitySand = [
     stage_id: '12081',
     thumbnail_image: 'high_diaspora_2',
     is_blue_treasure: true,
+    is_blue_eternitySand: true,
   },
   {
     quest_id: '305411',
@@ -306,6 +327,7 @@ export const Raid_EternitySand = [
     stage_id: '12081',
     thumbnail_image: 'high_diaspora_2',
     is_blue_treasure: true,
+    is_blue_eternitySand: true,
   },
   {
     quest_id: '305421',
@@ -320,6 +342,7 @@ export const Raid_EternitySand = [
     stage_id: '12081',
     thumbnail_image: 'high_diaspora_2',
     is_blue_treasure: true,
+    is_blue_eternitySand: true,
   },
   {
     quest_id: '305431',
@@ -334,6 +357,7 @@ export const Raid_EternitySand = [
     stage_id: '12081',
     thumbnail_image: 'high_diaspora_2',
     is_blue_treasure: true,
+    is_blue_eternitySand: true,
   },
   {
     quest_id: '305311',
@@ -348,6 +372,7 @@ export const Raid_EternitySand = [
     stage_id: '12082',
     thumbnail_image: 'high_ultimate_bahamut',
     is_blue_treasure: false,
+    is_blue_eternitySand: false,
   },
 ]
 export const Raid_GoldBrick = [

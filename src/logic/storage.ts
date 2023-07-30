@@ -3,9 +3,11 @@ import { Raid_EternitySand, Raid_GoldBrick } from '~/constants/raid'
 
 const eternitySandDataInit = Raid_EternitySand.reduce((pre, cur) => {
   const data: RaidInfo = { ...cur }
+  data.visiable = true
   data.total = 0
   data.blueChest = 0
   data.eternitySand = 0
+  data.lastDropCount = 0
   pre.push(data)
   return pre
 }, [] as RaidInfo[])
@@ -45,9 +47,12 @@ export interface RaidInfo {
   stage_id: string
   thumbnail_image: string
   is_blue_treasure: boolean
+  visiable?: boolean
+  is_blue_eternitySand?: boolean
   total?: number
   blueChest?: number
   eternitySand?: number
+  lastDropCount?: number
 }
 
 export interface GoldBrickTableData {

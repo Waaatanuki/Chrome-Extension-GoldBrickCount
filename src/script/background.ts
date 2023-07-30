@@ -90,9 +90,13 @@ import { Raid_EternitySand, Raid_GoldBrick, targetRaid } from '~/constants/raid'
     }
 
     hitRaid.total!++
+    hitRaid.lastDropCount!++
     treasureList.forEach((treasure) => {
       treasure.box === '11' && hitRaid!.blueChest!++
-      treasure.key === '10_215' && hitRaid!.eternitySand!++
+      if (treasure.key === '10_215') {
+        hitRaid!.eternitySand!++
+        hitRaid!.lastDropCount = 0
+      }
     })
   }
 

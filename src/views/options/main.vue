@@ -1,11 +1,21 @@
-<!-- eslint-disable no-console -->
-<!-- eslint-disable no-alert -->
 <script setup lang="ts">
+import RaidCard from './components/RaidCard.vue'
 import { eternitySandData } from '~/logic/storage'
 </script>
 
 <template>
-  <el-card v-for="data in eternitySandData" :key="data.quest_id">
-    {{ data }}
-  </el-card>
+  <RaidCard :data="eternitySandData.filter(i => i.visiable)" />
+
+  <el-collapse>
+    <el-collapse-item>
+      <template #title>
+        <div ml-5>
+          <el-text size="large">
+            隐藏副本
+          </el-text>
+        </div>
+      </template>
+      <RaidCard is-collapse :data="eternitySandData.filter(i => !i.visiable)" />
+    </el-collapse-item>
+  </el-collapse>
 </template>
