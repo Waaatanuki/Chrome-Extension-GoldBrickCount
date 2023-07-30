@@ -37,7 +37,9 @@ function importData() {
           goldBrickData.value = []
       })
     }
-    else { alert('只能在gbfApp网站导入') }
+    else {
+      ElMessage.info('只能在gbfApp网站导入')
+    }
   })
 }
 
