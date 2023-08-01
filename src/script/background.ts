@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { load } from 'cheerio'
 import type { BattleMemo, GoldBrickData } from '~/logic/storage'
 import { battleMemo, eternitySandData, goldBrickData, goldBrickTableData } from '~/logic/storage'
@@ -8,23 +9,28 @@ import { Raid_EternitySand, Raid_GoldBrick, targetRaid } from '~/constants/raid'
 (() => {
   const raidUrlREG = /granbluefantasy.jp\/#raid_multi\/[0-9]+/
   const resultUrlREG = /granbluefantasy.jp\/#result_multi\/[0-9]+/
-  let isSecond = true
+  let checkFlag = false
   chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
     // 记录id与副本名称
+    if (changeInfo.url && raidUrlREG.test(changeInfo.url) && tab.favIconUrl && !isForbiddenUrl(changeInfo.url))
+      checkFlag = false
+
+    if (changeInfo.status === 'loading' && !changeInfo.url && tab.url && raidUrlREG.test(tab.url) && !isForbiddenUrl(tab.url))
+      checkFlag = true
+
     if (changeInfo.status === 'complete' && tab.url && raidUrlREG.test(tab.url) && !isForbiddenUrl(tab.url)) {
-      isSecond = !isSecond
-      if (!isSecond)
+      if (!checkFlag)
         return
 
       const battle_id = tab.url.match(/[0-9]+/g)![0]
       const hitMemo = battleMemo.value.find(memo => memo.battle_id === battle_id)
       if (hitMemo)
         return
-
+      console.log('gogogo')
       chrome.tabs.sendMessage(tabId, { todo: 'getRaidName' }).then((res) => {
         if (!res?.questName)
           return
-
+        console.log({ battle_id, quest_name: res.questName, timestamp: Date.now() })
         const hit = targetRaid.find(r => r.tweet_name_en === res.questName || r.tweet_name_jp === res.questName)
         if (!hit)
           return
@@ -33,6 +39,7 @@ import { Raid_EternitySand, Raid_GoldBrick, targetRaid } from '~/constants/raid'
 
         if (battleMemo.value.length > 15)
           battleMemo.value.shift()
+        console.log(battleMemo.value)
       })
     }
 
