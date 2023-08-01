@@ -25,7 +25,7 @@ function getEternitySandRatio(item: RaidInfo) {
     <div v-if="isCollapse" i-carbon:checkmark-outline absolute right-2 top-2 text-sm icon-btn @click="item.visiable = !item.visiable" />
     <div v-else i-carbon:close-outline absolute right-2 top-2 text-sm icon-btn @click="item.visiable = !item.visiable" />
     <div flex justify-evenly gap-5>
-      <img :src="getRaidImgSrc(item.quest_id)">
+      <img :src="getImgSrc(item.quest_id, 'raid')">
       <div class="w-60%" fc flex-col gap-4>
         <div flex justify-between gap-10>
           <div w-25 flex items-start justify-center>

@@ -43,10 +43,7 @@ function getEntry() {
   })
 
   list.background = path.resolve(__dirname, './src/script/background.ts')
-  list.content_script = path.resolve(
-    __dirname,
-    './src/script/content_script.ts',
-  )
+  list.content_script = path.resolve(__dirname, './src/script/content_script.ts')
   return list
 }
 
