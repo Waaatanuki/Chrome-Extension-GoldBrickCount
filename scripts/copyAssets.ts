@@ -1,7 +1,5 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
-/* eslint-disable @typescript-eslint/no-require-imports */
-const path = require('node:path')
-const fsPromises = require('node:fs/promises')
+import path from 'node:path'
+import fsPromises from 'node:fs/promises'
 
 const copyList = [{ src: 'src/assets/icon', dest: 'dist/assets' }]
 
